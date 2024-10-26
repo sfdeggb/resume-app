@@ -15,6 +15,37 @@ export function Portfolio() {
   const blogRef = useRef<HTMLElement>(null)
   const contactRef = useRef<HTMLElement>(null)
   const educationRef = useRef<HTMLElement>(null) // Added educationRef
+  
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [submitStatus, setSubmitStatus] = useState('')
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prevData => ({ ...prevData, [name]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setSubmitStatus('提交中...')
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setSubmitStatus('提交成功！')
+        setFormData({ name: '', email: '', message: '' })
+      } else {
+        setSubmitStatus('提交失败，请稍后重试。')
+      }
+    } catch (error) {
+      setSubmitStatus('发生错误，请稍后重试。')
+    }
+  }
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -26,8 +57,11 @@ export function Portfolio() {
     }
   }, [])
 
-  const scrollToSection = (ref: React.RefObject<HTMLElement>) => {
+  const scrollToSection = (ref: React.RefObject<HTMLElement>, callback?: () => void) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' })
+    if (callback) {
+      setTimeout(callback, 100) // 给一个小延迟，确保滚动已经开始
+    }
   }
 
   const formatTime = (date: Date) => {
@@ -40,12 +74,12 @@ export function Portfolio() {
   }
 
   const projects = [
-    { name: "RL_Like_o1", description: "强化学习算法实现", link: "https://github.com/sfdeggb/RL_Like_o1", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-CAow1FKHyNjsiov3vQf3SuwixNveY1.jpg" },
+    { name: "RL_Like_o1", description: "Openai o1强化学习技术复现", link: "https://github.com/sfdeggb/RL_Like_o1", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-CAow1FKHyNjsiov3vQf3SuwixNveY1.jpg" },
     { name: "AI_Renamer_Enginner", description: "AI重命名工具", link: "https://github.com/sfdeggb/AI_Renamer_Enginner", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-P7v8n3ezCAPDRO7UDg3lHwRU0vWe1p.jpg" },
-    { name: "Emind", description: "思维导图生成工具", link: "https://github.com/sfdeggb/Emind", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-Tu5fPxBGgUqAHnBZzRoVS9N6UQaz17.jpg" },
-    { name: "JIAN-Copilot", description: "AI编程助手", link: "https://github.com/sfdeggb/JIAN-Copilot", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5-6qK9yaJT4WhmfvRERHa2USGGo6JJbf.jpg" },
+    { name: "Emind", description: "音乐生成与创作Agent", link: "https://github.com/sfdeggb/Emind", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-Tu5fPxBGgUqAHnBZzRoVS9N6UQaz17.jpg" },
+    { name: "JIAN-Copilot", description: "AI技术问答系统", link: "https://github.com/sfdeggb/JIAN-Copilot", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5-6qK9yaJT4WhmfvRERHa2USGGo6JJbf.jpg" },
     { name: "LLM-Roadmap", description: "大语言模型学习路线图", link: "https://github.com/sfdeggb/LLM-Roadmap", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4-mtbyEOWSzxQHALYIdTJuPupit8kpnr.jpg" },
-    { name: "Face-Version", description: "人脸识别系统", link: "https://github.com/sfdeggb/Face-Version", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6-sLr3FGnrS41wuGSl84tIHVVMiFJX9r.jpg" }
+    { name: "Face-Version", description: "情感分析与人脸识别系统", link: "https://github.com/sfdeggb/Face-Version", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6-sLr3FGnrS41wuGSl84tIHVVMiFJX9r.jpg" }
   ]
 
   const skills = [
@@ -69,16 +103,21 @@ export function Portfolio() {
   ]
 
   const partners = [
-    { name: "成都文武信息技术有限责任公司", logo: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E6%96%87%E6%AD%A6%E4%BF%A1%E6%81%AF-bqsFtw8P6N2sfgYycHC5VXp6OWQzra.png", aspectRatio: "4/1" },
-    { name: "成都移动互联网协会", logo: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E4%BA%92%E8%81%94%E7%BD%91%E5%8D%8F%E4%BC%9A-Ej6LdzNgzkf5gmmJEeCFq6LFtwbRGF.png", aspectRatio: "1/1" },
-    { name: "智伯乐（成都）科技有限责任公司", logo: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E6%99%BA%E4%BC%AF%E4%B9%90-gHWCBnEg1nEj6dH35OLSdCD90discx.png", aspectRatio: "5/1" },
+    { name: "成都文武信息技术有限责任公司", link:"https://ww-it.cn/", logo: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E6%96%87%E6%AD%A6%E4%BF%A1%E6%81%AF-bqsFtw8P6N2sfgYycHC5VXp6OWQzra.png", aspectRatio: "4/1" },
+    { name: "成都移动互联网协会", link:"https://www.isc.org.cn/", logo: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E4%BA%92%E8%81%94%E7%BD%91%E5%8D%8F%E4%BC%9A-Ej6LdzNgzkf5gmmJEeCFq6LFtwbRGF.png", aspectRatio: "1/1" },
+    { name: "智伯乐（成都）科技有限责任公司", link:"https://www.zbl.vip/",logo: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E6%99%BA%E4%BC%AF%E4%B9%90-gHWCBnEg1nEj6dH35OLSdCD90discx.png", aspectRatio: "5/1" },
   ]
 
   const blogPosts = [
-    { title: "AI革命：深度学习的未来", category: "人工智能", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/blog1-swgju8go5oYHgSg1Ykink71rZzT37Z.jpg" },
-    { title: "从零开始：构建你的第一个神经网络", category: "机器学习", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/blog2-xfVqrlFjswtg6Q8cQjdu5Sm5vnorT8.jpg" },
-    { title: "数据科学家的日常：挑战与机遇", category: "数据科学", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/blog3-V95guEg8ODAvIoduXNPOGWrbV7fyFb.jpg" },
+    { title: "AI革命：深度学习的未来", link:"https://blog.csdn.net/m0_56022510/article/details/142166751?spm=1001.2014.3001.5501", category: "人工智能", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/blog1-swgju8go5oYHgSg1Ykink71rZzT37Z.jpg" },
+    { title: "从零开始：构建你的第一个神经网络", link:"https://blog.csdn.net/m0_56022510/article/details/141746627?spm=1001.2014.3001.5501", category: "机器学习", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/blog2-xfVqrlFjswtg6Q8cQjdu5Sm5vnorT8.jpg" },
+    { title: "数据科学家的日常：挑战与机遇", link:"https://blog.csdn.net/m0_56022510/article/details/142442751?spm=1001.2014.3001.5501", category: "数据科学", image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/blog3-V95guEg8ODAvIoduXNPOGWrbV7fyFb.jpg" },
   ]
+
+  // 添加一个新的函数来处理"联系我"按钮的点击
+  const handleContactClick = () => {
+    scrollToSection(contactRef, () => setShowContact(true))
+  }
 
   return (
     <div className="flex h-screen bg-gray-900 text-gray-100">
@@ -162,7 +201,10 @@ export function Portfolio() {
                 <Calendar className="w-4 h-4 mr-2" />
                 <span className="text-sm">{formatDate(currentTime)}</span>
               </div>
-              <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm flex items-center">
+              <button 
+                className="bg-blue-500 text-white px-3 py-1 rounded text-sm flex items-center"
+                onClick={handleContactClick}  // 添加这个点击事件处理函数
+              >
                 联系我 <ExternalLink className="w-4 h-4 ml-1" />
               </button>
             </div>
@@ -232,27 +274,33 @@ export function Portfolio() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {partners.map((partner, index) => (
-                  <div key={index} className="flex flex-col items-center justify-center bg-gray-700 p-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                    <div className="w-full h-24 mb-4 relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-3/4 h-full relative" style={{ aspectRatio: partner.aspectRatio }}>
-                          <Image
-                            src={partner.logo}
-                            alt={partner.name}
-                            layout="fill"
-                            objectFit="contain"
-                            className="p-2"
-                          />
-                        </div>
+                  <a 
+                  key={index} 
+                  href={partner.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex flex-col items-center justify-center bg-gray-700 p-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105"
+                >
+                  <div className="w-full h-24 mb-4 relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-3/4 h-full relative" style={{ aspectRatio: partner.aspectRatio }}>
+                        <Image
+                          src={partner.logo}
+                          alt={partner.name}
+                          layout="fill"
+                          objectFit="contain"
+                          className="p-2"
+                        />
                       </div>
                     </div>
-                    <p className="text-center text-sm font-medium text-gray-300">{partner.name}</p>
                   </div>
-                ))}
+                  <p className="text-center text-sm font-medium text-gray-300">{partner.name}</p>
+                </a>
+              ))}
               </div>
               <div className="grid grid-cols-3 gap-4 text-center mt-8">
                 <div className="bg-gray-700 p-4 rounded-lg">
-                  <p className="text-4xl font-bold text-blue-400">3+</p>
+                  <p className="text-4xl font-bold text-blue-400">1+</p>
                   <p className="text-gray-400">年工作经验</p>
                 </div>
                 <div className="bg-gray-700 p-4 rounded-lg">
@@ -260,7 +308,7 @@ export function Portfolio() {
                   <p className="text-gray-400">完成项目</p>
                 </div>
                 <div className="bg-gray-700 p-4 rounded-lg">
-                  <p className="text-4xl font-bold text-yellow-400">100%</p>
+                  <p className="text-4xl font-bold text-yellow-400">95%</p>
                   <p className="text-gray-400">客户满意度</p>
                 </div>
               </div>
@@ -368,29 +416,29 @@ export function Portfolio() {
         <section ref={blogRef} className="mb-12">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">博客</h2>
-            <a href="#" className="text-blue-400 flex items-center">
+            <a href="https://blog.csdn.net/m0_56022510?spm=1000.2115.3001.5343" className="text-blue-400 flex items-center">
               查看全部 <ArrowRight className="w-4 h-4 ml-1" />
             </a>
           </div>
           <div className="grid grid-cols-3 gap-4">
             {blogPosts.map((post, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg overflow-hidden">
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  width={400}
-                  height={300}
-                  className="object-cover w-full h-48"
-                />
-                <div className="p-4">
-                  <h3 className="font-bold text-lg mb-2">{post.title}</h3>
-                  <p className="text-sm text-gray-400">{post.category}</p>
-                  <a href="#" className="text-blue-400 flex items-center mt-2">
-                    阅读更多 <ArrowRight className="w-4 h-4 ml-1" />
-                  </a>
-                </div>
-              </div>
-            ))}
+               <a key={index} href={post.link} className="bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105" target="_blank" rel="noopener noreferrer">
+               <Image
+                 src={post.image}
+                 alt={post.title}
+                 width={400}
+                 height={300}
+                 className="object-cover w-full h-48"
+               />
+               <div className="p-4">
+                 <h3 className="font-bold text-lg mb-2">{post.title}</h3>
+                 <p className="text-sm text-gray-400">{post.category}</p>
+                 <div className="text-blue-400 flex items-center mt-2">
+                   阅读更多 <ArrowRight className="w-4 h-4 ml-1" />
+                 </div>
+               </div>
+             </a>
+           ))}
           </div>
         </section>
 
@@ -400,7 +448,7 @@ export function Portfolio() {
           <div className="space-y-4">
             <div className="bg-gray-800 p-4 rounded-lg">
               <p className="italic">&ldquo;可靠、值得信任、工作中合作愉快。&rdquo;</p>
-              <p className="text-right">— 张定誉，成都移动互联网协会</p>
+              <p className="text-right">— 张定���，成都移动互联网协会</p>
             </div>
             <div className="bg-gray-800 p-4 rounded-lg">
               <p className="italic">&ldquo;愿意为自己的想法付出实践和努力。&rdquo;</p>
@@ -410,27 +458,53 @@ export function Portfolio() {
         </section>
 
         {/* 联系方式 */}
-        <section ref={contactRef} className="mb-12">
-          <h2 className="text-xl font-bold mb-4">联系我</h2>
-          <div className="grid grid-cols-3 gap-8">
-            <div className="col-span-2">
-              <form className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-1">姓名</label>
-                  <input type="text" id="name" name="name" className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">邮箱</label>
-                  <input type="email" id="email" name="email" className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white" />
-                </div>
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-1">留言</label>
-                  <textarea id="message" name="message" rows={4} className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"></textarea>
-                </div>
-                <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
-                  提交
-                </button>
-              </form>
+       {/* 联系方式 */}
+    <section ref={contactRef} className="mb-12">
+      <h2 className="text-xl font-bold mb-4">联系我</h2>
+      <div className="grid grid-cols-3 gap-8">
+        <div className="col-span-2">
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-1">姓名</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">邮箱</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-1">留言</label>
+              <textarea
+                id="message"
+                name="message"
+                rows={4}
+                value={formData.message}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
+              提交
+            </button>
+            {submitStatus && <p className="text-center text-sm mt-2">{submitStatus}</p>}
+          </form>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">地址</h3>
