@@ -2,10 +2,10 @@
 
 import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react'
-import { Home, FolderKanban, User, Phone, BookOpen, MapPin, Calendar, ExternalLink, Code, ArrowRight, Mail, Building, Cpu, Database, Brain, Eye, Server, PenTool, Target, Sparkles } from 'lucide-react'
+import { Home, FolderKanban, User, Phone, BookOpen, MapPin, Calendar, ExternalLink, ArrowRight, Mail, Building, Cpu, Database, Brain, Eye, Server, PenTool, Target, Sparkles } from 'lucide-react'
 
 export function Portfolio() {
-  const [showContact, setShowContact] = useState(false)
+  //const [showContact, setShowContact] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
 
   const homeRef = useRef<HTMLElement>(null)
@@ -14,7 +14,7 @@ export function Portfolio() {
   const skillsRef = useRef<HTMLElement>(null)
   const blogRef = useRef<HTMLElement>(null)
   const contactRef = useRef<HTMLElement>(null)
-  const educationRef = useRef<HTMLElement>(null) // Added educationRef
+  const educationRef = useRef<HTMLDivElement>(null) // Added educationRef
   
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [submitStatus, setSubmitStatus] = useState('')
@@ -42,7 +42,7 @@ export function Portfolio() {
       } else {
         setSubmitStatus('提交失败，请稍后重试。')
       }
-    } catch (error) {
+    } catch{
       setSubmitStatus('发生错误，请稍后重试。')
     }
   }
@@ -57,7 +57,7 @@ export function Portfolio() {
     }
   }, [])
 
-  const scrollToSection = (ref: React.RefObject<HTMLElement>, callback?: () => void) => {
+  const scrollToSection = (ref: React.RefObject<HTMLElement | HTMLDivElement>, callback?: () => void) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' })
     if (callback) {
       setTimeout(callback, 100) // 给一个小延迟，确保滚动已经开始
@@ -116,7 +116,7 @@ export function Portfolio() {
 
   // 添加一个新的函数来处理"联系我"按钮的点击
   const handleContactClick = () => {
-    scrollToSection(contactRef, () => setShowContact(true))
+    scrollToSection(contactRef)
   }
 
   return (
